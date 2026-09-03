@@ -1,14 +1,15 @@
+from pprint import pprint
+
+
 def analyze_user_activity(log_file_path: str) -> dict:
-    """
-    วิเคราะห์ไฟล์ Log และคืนค่าสรุปพฤติกรรมผู้ใช้ในรูปแบบ dictionary
-    """
+    """วิเคราะห์ไฟล์ Log และคืนค่าสรุปพฤติกรรมผู้ใช้ในรูปแบบ dictionary"""
     user_action_counts = {}  # {user_id: total_actions}
-    action_counts = {}       # {action_name: count}
-    total_duration = 0
+    action_counts = {}  # {action_name: count}
+    total_duration = 0.0
     valid_lines_count = 0
 
     try:
-        with open(log_file_path, 'r', encoding='utf-8') as file:
+        with open(log_file_path, "r", encoding="utf-8") as file:
             for line in file:
                 # ข้ามบรรทัดว่าง
                 line = line.strip()
@@ -29,7 +30,9 @@ def analyze_user_activity(log_file_path: str) -> dict:
                     continue
 
                 # บันทึกข้อมูลที่ถูกต้อง
-                user_action_counts[user_id] = user_action_counts.get(user_id, 0) + 1
+                user_action_counts[user_id] = (
+                    user_action_counts.get(user_id, 0) + 1
+                )
                 action_counts[action] = action_counts.get(action, 0) + 1
                 total_duration += duration
                 valid_lines_count += 1
@@ -44,12 +47,14 @@ def analyze_user_activity(log_file_path: str) -> dict:
             "total_users": 0,
             "action_counts": {},
             "most_active_user": None,
-            "average_session_time": 0.0
+            "average_session_time": 0.0,
         }
 
-    # หา user ที่มีกิจกรรมมากที่สุด
-    most_active_user = max(user_action_counts, key=user_action_counts.get)
-    
+    # หา user ที่มีกิจกรรมมากที่สุด (ใส่ default=None กัน crash ถ้าไม่มีข้อมูล)
+    most_active_user = max(
+        user_action_counts, key=user_action_counts.get, default=None
+    )
+
     # คำนวณระยะเวลาเฉลี่ยต่อกิจกรรม
     average_session_time = round(total_duration / valid_lines_count, 2)
 
@@ -57,11 +62,10 @@ def analyze_user_activity(log_file_path: str) -> dict:
         "total_users": len(user_action_counts),
         "action_counts": action_counts,
         "most_active_user": most_active_user,
-        "average_session_time": average_session_time
+        "average_session_time": average_session_time,
     }
 
 
 if __name__ == "__main__":
     result = analyze_user_activity("activity.log")
-    from pprint import pprint
     pprint(result)
