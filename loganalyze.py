@@ -65,7 +65,6 @@ def analyze_user_activity(log_file_path: str) -> dict:
         "average_session_time": average_session_time,
     }
 
-
 if __name__ == "__main__":
     result = analyze_user_activity("activity.log")
     pprint(result)
